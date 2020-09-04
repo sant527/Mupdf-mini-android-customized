@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+group = 'com.artifex.mupdf'
+version = '1.17.0'
+
+dependencies {
+	implementation 'com.android.support:appcompat-v7:26.0.1'
+	compile 'com.android.support:cardview-v7:26.0.1'
+	//compile 'com.android.support:design:23.1.1'
+	//compile 'com.android.support:recyclerview-v7:23.1.1'
+	compile 'com.android.support:design:26.0.1'
+	compile 'com.android.support:recyclerview-v7:26.0.1'
+	if (file('../jni/build.gradle').isFile())
+		api project(':jni')
+	else
+		api 'com.artifex.mupdf:fitz:1.17.0'
+}
+
+android {
+	compileSdkVersion 26
+	defaultConfig {
+		minSdkVersion 16
+		targetSdkVersion 26
+	}
+	lintOptions {
+		disable 'ContentDescription'
+	}
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			if (project.hasProperty('MAVEN_REPO')) {
+				repository(url: MAVEN_REPO)
+			} else {
+				repository(url: "file://${System.properties['user.home']}/MAVEN")
+			}
+			pom {
+				artifactId = 'mini'
+				project {
+					licenses {
+						license {
+							name 'GNU Affero General Public License'
+							url 'https://www.gnu.org/licenses/agpl-3.0.html'
+						}
+					}
+				}
+			}
+		}
+	}
+}
